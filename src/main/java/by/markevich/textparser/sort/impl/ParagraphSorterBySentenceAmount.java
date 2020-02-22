@@ -1,6 +1,5 @@
 package by.markevich.textparser.sort.impl;
 
-import by.markevich.textparser.composite.Composite;
 import by.markevich.textparser.composite.TextComponent;
 import by.markevich.textparser.composite.TextComponentType;
 import by.markevich.textparser.exception.SortException;

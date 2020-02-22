@@ -54,6 +54,7 @@ public class Composite implements TextComponent {
         for (TextComponent component : textComponents) {
             builder.append(component.toString());
         }
+
         return builder.toString();
     }
 }
