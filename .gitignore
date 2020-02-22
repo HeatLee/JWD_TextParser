@@ -187,3 +187,5 @@ modules.xml
 hs_err_pid*
 
 # End of https://www.gitignore.io/api/java,eclipse,intellij
+
+src/main/java/by/markevich/textparser/runner/
