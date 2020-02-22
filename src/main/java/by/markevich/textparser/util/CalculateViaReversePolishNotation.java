@@ -3,17 +3,20 @@ package by.markevich.textparser.util;
 import java.util.Stack;
 
 public class CalculateViaReversePolishNotation {
+    private static final char ZERO = '0';
+    private static final char NINE = '9';
+
     public int calculateByPolishNotation(String text) {
         text = changeShift(text);
 
-        Stack<Character> operation = new Stack<Character>();
-        Stack<Integer> result = new Stack<Integer>();
+        Stack<Character> operation = new Stack<>();
+        Stack<Integer> result = new Stack<>();
         int i = 0;
         char symbol;
         while (i < text.length()) {
             symbol = text.charAt(i);
             if (isDigit(symbol)) {
-                StringBuilder digit = new StringBuilder("");
+                StringBuilder digit = new StringBuilder();
                 while (i < text.length() && isDigit(symbol = text.charAt(i))) {
                     digit.append(symbol);
                     i++;
@@ -23,14 +26,14 @@ public class CalculateViaReversePolishNotation {
                 if (operation.isEmpty() || getPriority(symbol) < getPriority(operation.peek())) {
                     operation.push(symbol);
                 } else {
-                    if (symbol != ')') {
-                        while (!operation.isEmpty() && operation.peek() != '(' &&
+                    if (symbol != ArithmeticOperators.CLOSE_BRACKET) {
+                        while (!operation.isEmpty() && operation.peek() != ArithmeticOperators.OPEN_BRACKET &&
                                 getPriority(symbol) > getPriority(operation.peek())) {
                             calculate(operation.pop(), result);
                         }
                         operation.push(symbol);
                     } else {
-                        while (operation.peek() != '(') {
+                        while (operation.peek() != ArithmeticOperators.OPEN_BRACKET) {
                             calculate(operation.pop(), result);
                         }
                         operation.pop();
@@ -50,52 +53,51 @@ public class CalculateViaReversePolishNotation {
         int firstNumber;
         int secondNumber;
         switch (operation) {
-            case '~':
+            case ArithmeticOperators.REVERSE:
                 firstNumber = result.pop();
                 result.push(~firstNumber);
                 return;
-            case '&':
+            case ArithmeticOperators.AND:
                 firstNumber = result.pop();
                 secondNumber = result.pop();
                 result.push(firstNumber & secondNumber);
                 return;
-            case '|':
+            case ArithmeticOperators.OR:
                 firstNumber = result.pop();
                 secondNumber = result.pop();
                 result.push(firstNumber | secondNumber);
                 return;
-            case '>':
+            case ArithmeticOperators.BIGGER:
                 firstNumber = result.pop();
                 secondNumber = result.pop();
                 result.push(secondNumber >> firstNumber);
                 return;
-            case '<':
+            case ArithmeticOperators.SMALLER:
                 firstNumber = result.pop();
                 secondNumber = result.pop();
                 result.push(secondNumber << firstNumber);
                 return;
-            case '^':
+            case ArithmeticOperators.XOR:
                 firstNumber = result.pop();
                 secondNumber = result.pop();
                 result.push(firstNumber ^ secondNumber);
-                return;
         }
     }
 
     private int getPriority(char symbol) {
         switch (symbol) {
-            case '(':
+            case ArithmeticOperators.OPEN_BRACKET:
                 return 0;
-            case '~':
+            case ArithmeticOperators.REVERSE:
                 return 1;
-            case '>':
-            case '<':
+            case ArithmeticOperators.BIGGER:
+            case ArithmeticOperators.SMALLER:
                 return 2;
-            case '&':
+            case ArithmeticOperators.AND:
                 return 3;
-            case '^':
+            case ArithmeticOperators.XOR:
                 return 4;
-            case '|':
+            case ArithmeticOperators.OR:
                 return 5;
             default:
                 return 100;
@@ -103,11 +105,11 @@ public class CalculateViaReversePolishNotation {
     }
 
     private boolean isDigit(char symbol) {
-        return symbol >= '0' && symbol <= '9';
+        return symbol >= ZERO && symbol <= NINE;
     }
 
     private String changeShift(String text) {
-        text = text.replace(">>", ">");
-        return text.replace("<<", "<");
+        text = text.replace(ArithmeticOperators.BIT_SHIFT_RIGHT, String.valueOf(ArithmeticOperators.BIGGER));
+        return text.replace(ArithmeticOperators.BIT_SHIFT_LEFT, String.valueOf(ArithmeticOperators.SMALLER));
     }
 }
