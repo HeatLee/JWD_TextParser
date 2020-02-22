@@ -3,16 +3,15 @@ package by.markevich.textparser.reader.impl;
 import by.markevich.textparser.exception.ReaderException;
 import by.markevich.textparser.reader.Reader;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.stream.Collectors;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 public class TextFileReader implements Reader {
     private File file;
 
-    public TextFileReader(File file) throws ReaderException {
+    public TextFileReader(File file){
         this.file = file;
     }
 
@@ -27,7 +26,7 @@ public class TextFileReader implements Reader {
         try {
             checkFile(file);
             if (file.exists()) {
-                fileContent = new BufferedReader(new FileReader(file)).lines().collect(Collectors.joining(""));
+                fileContent = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
             }
         } catch (IOException e) {
             throw new ReaderException();
